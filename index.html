@@ -41,92 +41,72 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
+    <header>
         <h1>World Weather</h1>
-        <button id="refreshAll" class="refresh-all-btn">
+        <button id="refreshAll" class="refresh-button">
             <i class="fas fa-sync-alt"></i> Refresh All
         </button>
-        <div class="analytics-counter">
-            Global refresh count: <span id="refreshCount">0</span>
-        </div>
-        <div class="weather-cards">
-            <div class="weather-section">
-                <div class="weather-card" id="saint-petersburg">
-                    <div class="card-bg"></div>
-                    <div class="card-content">
-                        <h2>Saint Petersburg</h2>
-                        <div class="weather-info">
-                            <p class="temperature">Loading...</p>
-                            <p class="description">Loading...</p>
-                            <p class="humidity">Loading...</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="forecast-container" id="saint-petersburg-forecast">
-                    <div class="forecast-title">7-Day Forecast</div>
-                    <div class="forecast-cards"></div>
-                </div>
-            </div>
+    </header>
 
-            <div class="weather-section">
-                <div class="weather-card" id="bali">
-                    <div class="card-bg"></div>
-                    <div class="card-content">
-                        <h2>Bali</h2>
-                        <div class="weather-info">
-                            <p class="temperature">Loading...</p>
-                            <p class="description">Loading...</p>
-                            <p class="humidity">Loading...</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="forecast-container" id="bali-forecast">
-                    <div class="forecast-title">7-Day Forecast</div>
-                    <div class="forecast-cards"></div>
-                </div>
-            </div>
-
-            <div class="weather-section">
-                <div class="weather-card" id="bangkok">
-                    <div class="card-bg"></div>
-                    <div class="card-content">
-                        <h2>Bangkok</h2>
-                        <div class="weather-info">
-                            <p class="temperature">Loading...</p>
-                            <p class="description">Loading...</p>
-                            <p class="humidity">Loading...</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="forecast-container" id="bangkok-forecast">
-                    <div class="forecast-title">7-Day Forecast</div>
-                    <div class="forecast-cards"></div>
-                </div>
+    <div class="weather-grid">
+        <!-- Saint Petersburg -->
+        <div class="weather-card" id="saint-petersburg">
+            <h2>Saint Petersburg</h2>
+            <div class="weather-info">
+                <div class="temperature">Loading...</div>
+                <div class="description">Loading...</div>
+                <div class="humidity">Loading...</div>
             </div>
         </div>
-        
-        <!-- News Section -->
-        <div class="news-section">
-            <div class="news-header">
-                <h2>Latest Political News</h2>
-                <img id="countryFlag" class="country-flag" src="" alt="Country flag">
+        <div class="forecast-container" id="saint-petersburg-forecast">
+            <h3>7-Day Forecast</h3>
+            <div class="forecast-cards"></div>
+        </div>
+
+        <!-- Bali -->
+        <div class="weather-card" id="bali">
+            <h2>Bali</h2>
+            <div class="weather-info">
+                <div class="temperature">Loading...</div>
+                <div class="description">Loading...</div>
+                <div class="humidity">Loading...</div>
             </div>
-            <div class="news-container">
-                <div class="news-filters">
-                    <select id="newsCountry">
-                        <option value="us" data-flag="🇺🇸">United States</option>
-                        <option value="gb" data-flag="🇬🇧">United Kingdom</option>
-                        <option value="ru" data-flag="🇷🇺">Russia</option>
-                        <option value="th" data-flag="🇹🇭">Thailand</option>
-                    </select>
-                </div>
-                <div class="news-grid" id="newsGrid">
-                    <!-- News articles will be inserted here -->
-                </div>
+        </div>
+        <div class="forecast-container" id="bali-forecast">
+            <h3>7-Day Forecast</h3>
+            <div class="forecast-cards"></div>
+        </div>
+
+        <!-- Bangkok -->
+        <div class="weather-card" id="bangkok">
+            <h2>Bangkok</h2>
+            <div class="weather-info">
+                <div class="temperature">Loading...</div>
+                <div class="description">Loading...</div>
+                <div class="humidity">Loading...</div>
             </div>
+        </div>
+        <div class="forecast-container" id="bangkok-forecast">
+            <h3>7-Day Forecast</h3>
+            <div class="forecast-cards"></div>
         </div>
     </div>
-    <script type="module" src="firebase-config.js"></script>
+
+    <div class="news-section">
+        <h2>Latest Political News <img id="countryFlag" src="" alt="Country flag" class="country-flag"></h2>
+        <select id="newsCountry">
+            <option value="us">United States</option>
+            <option value="gb">United Kingdom</option>
+            <option value="au">Australia</option>
+            <option value="ca">Canada</option>
+            <option value="in">India</option>
+            <option value="nz">New Zealand</option>
+        </select>
+        <div id="newsGrid" class="news-grid">
+            <!-- News cards will be inserted here -->
+        </div>
+    </div>
+
     <script type="module" src="script.js"></script>
 </body>
 </html> 
