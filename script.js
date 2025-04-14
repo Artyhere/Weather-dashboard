@@ -165,4 +165,69 @@ document.addEventListener('DOMContentLoaded', () => {
     if (refreshBtn) {
         refreshBtn.addEventListener('click', updateAllWeather);
     }
-}); 
+
+    // Fetch news on page load
+    newsManager.fetchNews();
+});
+
+// News API configuration
+const NEWS_API_KEY = '1ac6cff8114248f5a47c3d75e0c3433d';
+const NEWS_API_URL = 'https://newsapi.org/v2/top-headlines';
+
+class NewsManager {
+    constructor() {
+        this.countrySelect = document.getElementById('newsCountry');
+        this.refreshButton = document.getElementById('refreshNews');
+        this.newsGrid = document.getElementById('newsGrid');
+        
+        // Add event listeners
+        this.refreshButton.addEventListener('click', () => this.fetchNews());
+        this.countrySelect.addEventListener('change', () => this.fetchNews());
+    }
+
+    async fetchNews() {
+        try {
+            const country = this.countrySelect.value;
+            const response = await fetch(`${NEWS_API_URL}?country=${country}&category=politics&apiKey=${NEWS_API_KEY}`);
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch news');
+            }
+
+            const data = await response.json();
+            this.displayNews(data.articles);
+        } catch (error) {
+            console.error('Error fetching news:', error);
+            this.newsGrid.innerHTML = '<p class="error">Failed to load news. Please try again later.</p>';
+        }
+    }
+
+    displayNews(articles) {
+        this.newsGrid.innerHTML = '';
+        
+        articles.forEach(article => {
+            if (!article.title || article.title === '[Removed]') return;
+            
+            const card = document.createElement('div');
+            card.className = 'news-card';
+            
+            card.innerHTML = `
+                <img class="news-image" src="${article.urlToImage || 'https://via.placeholder.com/300x200?text=No+Image'}" 
+                     alt="${article.title}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                <div class="news-content">
+                    <div class="news-title">${article.title}</div>
+                    <p class="news-description">${article.description || 'No description available'}</p>
+                    <div class="news-meta">
+                        <span class="news-source">${article.source.name}</span>
+                        <a href="${article.url}" target="_blank" class="news-link">Read More</a>
+                    </div>
+                </div>
+            `;
+            
+            this.newsGrid.appendChild(card);
+        });
+    }
+}
+
+// Initialize news manager
+const newsManager = new NewsManager(); 
