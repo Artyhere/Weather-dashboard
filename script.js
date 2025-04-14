@@ -1,3 +1,5 @@
+import { database, ref, onValue, set, get } from './firebase-config.js';
+
 // Get your API key from: https://openweathermap.org/api
 // After signing up, replace 'YOUR_API_KEY' below with your actual API key
 const API_KEY = '9ad57646fcaf467913eb676529722704';
@@ -10,32 +12,36 @@ const cities = [
 // Analytics tracking
 class RefreshTracker {
     constructor() {
-        this.count = parseInt(localStorage.getItem('weatherRefreshCount')) || 0;
         this.countElement = document.getElementById('refreshCount');
-        this.displayCount();
+        this.counterRef = ref(database, 'refreshCount');
+        
+        // Listen for counter updates
+        onValue(this.counterRef, (snapshot) => {
+            const count = snapshot.val() || 0;
+            this.updateDisplay(count);
+        });
     }
 
-    increment() {
-        this.count++;
-        localStorage.setItem('weatherRefreshCount', this.count.toString());
-        this.displayCount();
+    async increment() {
+        try {
+            const snapshot = await get(this.counterRef);
+            const currentCount = snapshot.val() || 0;
+            const newCount = currentCount + 1;
+            await set(this.counterRef, newCount);
+        } catch (error) {
+            console.error('Error updating counter:', error);
+        }
     }
 
-    displayCount() {
+    updateDisplay(count) {
         if (this.countElement) {
-            this.countElement.textContent = this.count;
+            this.countElement.textContent = count;
             
-            // Reset animation
+            // Add animation
             this.countElement.style.animation = 'none';
             this.countElement.offsetHeight; // Trigger reflow
             this.countElement.style.animation = 'fadeIn 0.5s ease-out';
         }
-    }
-
-    reset() {
-        this.count = 0;
-        localStorage.setItem('weatherRefreshCount', '0');
-        this.displayCount();
     }
 }
 
@@ -143,7 +149,7 @@ function updateWeatherCard(city, weatherData) {
 }
 
 async function updateAllWeather() {
-    refreshTracker.increment(); // Increment counter before fetching weather
+    await refreshTracker.increment(); // Increment counter before fetching weather
     for (const city of cities) {
         const weatherData = await fetchWeather(city);
         updateWeatherCard(city, weatherData);
@@ -152,7 +158,7 @@ async function updateAllWeather() {
 
 // News API configuration
 const NEWS_API_KEY = '1ac6cff8114248f5a47c3d75e0c3433d';
-const NEWS_API_URL = 'https://newsapi.org/v2/top-headlines';
+const NEWS_API_URL = 'https://gnews.io/api/v4/top-headlines';
 
 class NewsManager {
     constructor() {
@@ -180,7 +186,7 @@ class NewsManager {
     async fetchNews() {
         try {
             const country = this.countrySelect.value;
-            const response = await fetch(`${NEWS_API_URL}?country=${country}&category=politics&apiKey=${NEWS_API_KEY}`);
+            const response = await fetch(`${NEWS_API_URL}?category=general&lang=en&country=${country}&apikey=${NEWS_API_KEY}`);
             
             if (!response.ok) {
                 throw new Error('Failed to fetch news');
@@ -230,9 +236,6 @@ async function refreshAll() {
     refreshBtn.classList.add('refreshing');
     
     try {
-        // Update refresh count
-        refreshTracker.increment();
-        
         // Refresh both weather and news
         await Promise.all([
             updateAllWeather(),
