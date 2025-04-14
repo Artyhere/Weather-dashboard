@@ -17,11 +17,4 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-// Enable persistence to help with connection issues
-try {
-    await database.goOnline();
-} catch (error) {
-    console.error("Firebase connection error:", error);
-}
-
 export { database, ref, onValue, set, get }; 

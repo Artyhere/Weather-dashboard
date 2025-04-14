@@ -166,7 +166,7 @@ async function updateAllWeather() {
 
 // News API configuration
 const NEWS_API_KEY = '1ac6cff8114248f5a47c3d75e0c3433d';
-const NEWS_API_URL = 'https://gnews.io/api/v4/top-headlines';
+const NEWS_API_URL = 'https://gnews.io/api/v4/search';
 
 class NewsManager {
     constructor() {
@@ -198,14 +198,14 @@ class NewsManager {
     async fetchNews() {
         try {
             const country = this.countrySelect.value;
-            const url = `${NEWS_API_URL}?category=general&lang=en&country=${country}&token=${NEWS_API_KEY}&max=10`;
+            // Using search endpoint with a broader query
+            const url = `${NEWS_API_URL}?q=general&lang=en&country=${country}&token=${NEWS_API_KEY}&max=10`;
             
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
-                    'Accept': 'application/json',
-                },
-                mode: 'cors'
+                    'Accept': 'application/json'
+                }
             });
             
             if (!response.ok) {
@@ -221,7 +221,7 @@ class NewsManager {
             this.displayNews(data.articles);
         } catch (error) {
             console.error('Error fetching news:', error);
-            this.newsGrid.innerHTML = '<p class="error">Failed to load news. Please try again later.</p>';
+            this.newsGrid.innerHTML = `<p class="error">Failed to load news. Error: ${error.message}</p>`;
         }
     }
 
