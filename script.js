@@ -165,7 +165,7 @@ async function updateAllWeather() {
 }
 
 // News API configuration
-const NEWS_API_KEY = '1ac6cff8114248f5a47c3d75e0c3433d';
+const NEWS_API_KEY = '13b34424ba1999b3ded92f704a649273';
 const NEWS_API_URL = 'https://gnews.io/api/v4/search';
 
 class NewsManager {
