@@ -1,3 +1,54 @@
+// Motivational Quotes
+const quotes = [
+    {
+        text: "The only way to do great work is to love what you do.",
+        author: "Steve Jobs"
+    },
+    {
+        text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+        author: "Winston Churchill"
+    },
+    {
+        text: "The future belongs to those who believe in the beauty of their dreams.",
+        author: "Eleanor Roosevelt"
+    },
+    {
+        text: "Don't watch the clock; do what it does. Keep going.",
+        author: "Sam Levenson"
+    },
+    {
+        text: "The best way to predict the future is to create it.",
+        author: "Peter Drucker"
+    },
+    {
+        text: "Everything you've ever wanted is on the other side of fear.",
+        author: "George Addair"
+    },
+    {
+        text: "The only limit to our realization of tomorrow will be our doubts of today.",
+        author: "Franklin D. Roosevelt"
+    },
+    {
+        text: "Believe you can and you're halfway there.",
+        author: "Theodore Roosevelt"
+    },
+    {
+        text: "Your time is limited, don't waste it living someone else's life.",
+        author: "Steve Jobs"
+    },
+    {
+        text: "The journey of a thousand miles begins with one step.",
+        author: "Lao Tzu"
+    }
+];
+
+function updateQuote() {
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    const quote = quotes[randomIndex];
+    document.getElementById('quote').textContent = quote.text;
+    document.getElementById('author').textContent = `- ${quote.author}`;
+}
+
 // Get your API key from: https://openweathermap.org/api
 const API_KEY = '9ad57646fcaf467913eb676529722704';
 const cities = [
@@ -217,6 +268,9 @@ async function refreshAll() {
 
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', () => {
+    // Update quote
+    updateQuote();
+    
     // Initial load
     updateAllWeather();
     newsManager.fetchNews();
@@ -224,6 +278,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add event listener for combined refresh button
     const refreshBtn = document.getElementById('refreshAll');
     if (refreshBtn) {
-        refreshBtn.addEventListener('click', refreshAll);
+        refreshBtn.addEventListener('click', async () => {
+            updateQuote(); // Update quote on refresh
+            await refreshAll();
+        });
     }
 }); 
