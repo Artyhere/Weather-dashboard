@@ -198,13 +198,26 @@ class NewsManager {
     async fetchNews() {
         try {
             const country = this.countrySelect.value;
-            const response = await fetch(`${NEWS_API_URL}?category=general&lang=en&country=${country}&apikey=${NEWS_API_KEY}`);
+            const url = `${NEWS_API_URL}?category=general&lang=en&country=${country}&token=${NEWS_API_KEY}&max=10`;
+            
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                },
+                mode: 'cors'
+            });
             
             if (!response.ok) {
-                throw new Error('Failed to fetch news');
+                const errorData = await response.json().catch(() => null);
+                console.error('News API Error:', errorData);
+                throw new Error(`Failed to fetch news: ${response.status}`);
             }
 
             const data = await response.json();
+            if (!data.articles || !Array.isArray(data.articles)) {
+                throw new Error('Invalid response format from news API');
+            }
             this.displayNews(data.articles);
         } catch (error) {
             console.error('Error fetching news:', error);
