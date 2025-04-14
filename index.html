@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Weather</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>World Weather</h1>
+        <button id="refreshBtn">Refresh Weather</button>
+        <div class="analytics-counter">
+            Refresh count: <span id="refreshCount">0</span>
+        </div>
+        <div class="weather-cards">
+            <div class="weather-section">
+                <div class="weather-card" id="saint-petersburg">
+                    <div class="card-bg"></div>
+                    <div class="card-content">
+                        <h2>Saint Petersburg</h2>
+                        <div class="weather-info">
+                            <p class="temperature">Loading...</p>
+                            <p class="description">Loading...</p>
+                            <p class="humidity">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="forecast-container" id="saint-petersburg-forecast">
+                    <div class="forecast-title">7-Day Forecast</div>
+                    <div class="forecast-cards"></div>
+                </div>
+            </div>
+
+            <div class="weather-section">
+                <div class="weather-card" id="bali">
+                    <div class="card-bg"></div>
+                    <div class="card-content">
+                        <h2>Bali</h2>
+                        <div class="weather-info">
+                            <p class="temperature">Loading...</p>
+                            <p class="description">Loading...</p>
+                            <p class="humidity">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="forecast-container" id="bali-forecast">
+                    <div class="forecast-title">7-Day Forecast</div>
+                    <div class="forecast-cards"></div>
+                </div>
+            </div>
+
+            <div class="weather-section">
+                <div class="weather-card" id="bangkok">
+                    <div class="card-bg"></div>
+                    <div class="card-content">
+                        <h2>Bangkok</h2>
+                        <div class="weather-info">
+                            <p class="temperature">Loading...</p>
+                            <p class="description">Loading...</p>
+                            <p class="humidity">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="forecast-container" id="bangkok-forecast">
+                    <div class="forecast-title">7-Day Forecast</div>
+                    <div class="forecast-cards"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
