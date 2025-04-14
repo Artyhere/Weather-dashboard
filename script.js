@@ -150,9 +150,17 @@ function updateWeatherCard(city, weatherData) {
 
 async function updateAllWeather() {
     await refreshTracker.increment(); // Increment counter before fetching weather
+    // Track all weather refresh
+    if (window.trackAllWeatherRefresh) {
+        window.trackAllWeatherRefresh();
+    }
     for (const city of cities) {
         const weatherData = await fetchWeather(city);
         updateWeatherCard(city, weatherData);
+        // Track individual city refresh
+        if (window.trackWeatherRefresh) {
+            window.trackWeatherRefresh(city.name);
+        }
     }
 }
 
@@ -168,6 +176,10 @@ class NewsManager {
         
         // Add event listener for country change
         this.countrySelect.addEventListener('change', () => {
+            const selectedCountry = this.countrySelect.options[this.countrySelect.selectedIndex].text;
+            if (window.trackNewsCountryChange) {
+                window.trackNewsCountryChange(selectedCountry);
+            }
             this.updateFlag();
             this.fetchNews();
         });
@@ -217,7 +229,7 @@ class NewsManager {
                     <p class="news-description">${article.description || 'No description available'}</p>
                     <div class="news-meta">
                         <span class="news-source">${article.source.name}</span>
-                        <a href="${article.url}" target="_blank" class="news-link">Read More</a>
+                        <a href="${article.url}" target="_blank" class="news-link" onclick="if(window.trackArticleClick){window.trackArticleClick('${article.title.replace(/'/g, "\\'")}', '${article.source.name.replace(/'/g, "\\'")}')}">Read More</a>
                     </div>
                 </div>
             `;

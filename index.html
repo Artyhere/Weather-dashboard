@@ -4,6 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>World Weather & News</title>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SRSQZHV7BM"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-SRSQZHV7BM');
+
+        // Custom event tracking functions
+        window.trackWeatherRefresh = function(city) {
+            gtag('event', 'weather_refresh', {
+                'city': city
+            });
+        };
+
+        window.trackAllWeatherRefresh = function() {
+            gtag('event', 'all_weather_refresh');
+        };
+
+        window.trackNewsCountryChange = function(country) {
+            gtag('event', 'news_country_change', {
+                'country': country
+            });
+        };
+
+        window.trackArticleClick = function(title, source) {
+            gtag('event', 'article_click', {
+                'title': title,
+                'source': source
+            });
+        };
+    </script>
+    <!-- End Google Analytics -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
