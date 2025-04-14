@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Weather</title>
+    <title>World Weather & News</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <h1>World Weather</h1>
-        <button id="refreshBtn">Refresh Weather</button>
+        <button id="refreshAll" class="refresh-all-btn">
+            <i class="fas fa-sync-alt"></i> Refresh All
+        </button>
         <div class="analytics-counter">
             Refresh count: <span id="refreshCount">0</span>
         </div>
@@ -66,6 +68,27 @@
                 <div class="forecast-container" id="bangkok-forecast">
                     <div class="forecast-title">7-Day Forecast</div>
                     <div class="forecast-cards"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- News Section -->
+        <div class="news-section">
+            <div class="news-header">
+                <h2>Latest Political News</h2>
+                <img id="countryFlag" class="country-flag" src="" alt="Country flag">
+            </div>
+            <div class="news-container">
+                <div class="news-filters">
+                    <select id="newsCountry">
+                        <option value="us" data-flag="🇺🇸">United States</option>
+                        <option value="gb" data-flag="🇬🇧">United Kingdom</option>
+                        <option value="ru" data-flag="🇷🇺">Russia</option>
+                        <option value="th" data-flag="🇹🇭">Thailand</option>
+                    </select>
+                </div>
+                <div class="news-grid" id="newsGrid">
+                    <!-- News articles will be inserted here -->
                 </div>
             </div>
         </div>

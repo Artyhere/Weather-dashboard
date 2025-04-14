@@ -150,26 +150,6 @@ async function updateAllWeather() {
     }
 }
 
-// Wait for DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    // Initial load without incrementing counter
-    (async () => {
-        for (const city of cities) {
-            const weatherData = await fetchWeather(city);
-            updateWeatherCard(city, weatherData);
-        }
-    })();
-
-    // Add event listener for refresh button
-    const refreshBtn = document.getElementById('refreshBtn');
-    if (refreshBtn) {
-        refreshBtn.addEventListener('click', updateAllWeather);
-    }
-
-    // Fetch news on page load
-    newsManager.fetchNews();
-});
-
 // News API configuration
 const NEWS_API_KEY = '1ac6cff8114248f5a47c3d75e0c3433d';
 const NEWS_API_URL = 'https://newsapi.org/v2/top-headlines';
@@ -177,12 +157,24 @@ const NEWS_API_URL = 'https://newsapi.org/v2/top-headlines';
 class NewsManager {
     constructor() {
         this.countrySelect = document.getElementById('newsCountry');
-        this.refreshButton = document.getElementById('refreshNews');
         this.newsGrid = document.getElementById('newsGrid');
+        this.countryFlag = document.getElementById('countryFlag');
         
-        // Add event listeners
-        this.refreshButton.addEventListener('click', () => this.fetchNews());
-        this.countrySelect.addEventListener('change', () => this.fetchNews());
+        // Add event listener for country change
+        this.countrySelect.addEventListener('change', () => {
+            this.updateFlag();
+            this.fetchNews();
+        });
+
+        // Set initial flag
+        this.updateFlag();
+    }
+
+    updateFlag() {
+        const selectedOption = this.countrySelect.options[this.countrySelect.selectedIndex];
+        const countryCode = this.countrySelect.value.toUpperCase();
+        this.countryFlag.src = `https://flagcdn.com/w80/${this.countrySelect.value}.png`;
+        this.countryFlag.alt = `${selectedOption.text} flag`;
     }
 
     async fetchNews() {
@@ -229,5 +221,37 @@ class NewsManager {
     }
 }
 
-// Initialize news manager
-const newsManager = new NewsManager(); 
+// Initialize managers
+const newsManager = new NewsManager();
+
+// Combined refresh function
+async function refreshAll() {
+    const refreshBtn = document.getElementById('refreshAll');
+    refreshBtn.classList.add('refreshing');
+    
+    try {
+        // Update refresh count
+        refreshTracker.increment();
+        
+        // Refresh both weather and news
+        await Promise.all([
+            updateAllWeather(),
+            newsManager.fetchNews()
+        ]);
+    } finally {
+        refreshBtn.classList.remove('refreshing');
+    }
+}
+
+// Wait for DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Initial load
+    updateAllWeather();
+    newsManager.fetchNews();
+
+    // Add event listener for combined refresh button
+    const refreshBtn = document.getElementById('refreshAll');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', refreshAll);
+    }
+}); 
