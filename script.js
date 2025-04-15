@@ -60,14 +60,10 @@ const cities = [
 async function fetchWeather(city) {
     try {
         // Fetch current weather
-        const currentResponse = await fetch(
-            `https://api.openweathermap.org/data/2.5/weather?q=${city.name}&units=metric&appid=${API_KEY}`
-        );
+        const currentResponse = await fetch(`/api/weather/${encodeURIComponent(city.name)}`);
         
         // Fetch forecast
-        const forecastResponse = await fetch(
-            `https://api.openweathermap.org/data/2.5/forecast?q=${city.name}&units=metric&appid=${API_KEY}`
-        );
+        const forecastResponse = await fetch(`/api/forecast/${encodeURIComponent(city.name)}`);
 
         if (!currentResponse.ok || !forecastResponse.ok) {
             throw new Error('Weather data not available');
@@ -194,18 +190,9 @@ class NewsManager {
     async fetchNews() {
         try {
             const country = this.countrySelect.value;
-            const url = `${NEWS_API_URL}?q=general&lang=en&country=${country}&token=${NEWS_API_KEY}&max=10`;
-            
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
+            const response = await fetch(`/api/news/${country}`);
             
             if (!response.ok) {
-                const errorData = await response.json().catch(() => null);
-                console.error('News API Error:', errorData);
                 throw new Error(`Failed to fetch news: ${response.status}`);
             }
 
@@ -283,4 +270,103 @@ document.addEventListener('DOMContentLoaded', () => {
             await refreshAll();
         });
     }
-}); 
+});
+
+import {
+    OPENAI_API_KEY,
+    OPENAI_MODEL,
+    OPENAI_MAX_TOKENS,
+    OPENAI_TEMPERATURE
+} from './openai-config.js';
+
+// Chat functionality
+const chatMessages = document.getElementById('chatMessages');
+const userInput = document.getElementById('userInput');
+const sendButton = document.getElementById('sendMessage');
+
+// Auto-resize textarea
+userInput.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+});
+
+// Handle Enter key
+userInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+
+sendButton.addEventListener('click', sendMessage);
+
+function addMessage(content, isUser = false) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+    
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+    messageContent.textContent = content;
+    
+    messageDiv.appendChild(messageContent);
+    chatMessages.appendChild(messageDiv);
+    
+    // Scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+async function sendMessage() {
+    const message = userInput.value.trim();
+    if (!message) return;
+
+    // Add user message to chat
+    addMessage(message, true);
+    
+    // Clear input
+    userInput.value = '';
+    userInput.style.height = 'auto';
+    
+    try {
+        // Show typing indicator
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message bot';
+        typingDiv.innerHTML = '<div class="message-content">Typing...</div>';
+        chatMessages.appendChild(typingDiv);
+
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message })
+        });
+
+        const data = await response.json();
+        
+        // Remove typing indicator
+        chatMessages.removeChild(typingDiv);
+        
+        if (data.choices && data.choices[0]) {
+            addMessage(data.choices[0].message.content);
+        } else {
+            throw new Error('Invalid response from chat API');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        addMessage('Sorry, I encountered an error. Please try again.');
+    }
+}
+
+// Add loading animation to CSS
+const style = document.createElement('style');
+style.textContent = `
+@keyframes typing {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+
+.message-content:contains("Typing...") {
+    animation: typing 1.5s infinite;
+}`;
+document.head.appendChild(style); 
